@@ -7,7 +7,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Heart, ChevronDown } from "lucide-react";
 
-const Header = () => {
+interface HeaderProps {
+  onOpenLogin: () => void;
+  onOpenSignup: () => void;
+}
+
+const Header = ({ onOpenLogin, onOpenSignup }: HeaderProps) => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -43,14 +48,11 @@ const Header = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer" onClick={onOpenSignup}>
                 <span className="font-medium">Sign Up</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <span>Login with Email</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <span>Login with Phone</span>
+              <DropdownMenuItem className="cursor-pointer" onClick={onOpenLogin}>
+                <span>Login</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
