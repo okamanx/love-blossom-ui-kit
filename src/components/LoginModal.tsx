@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Heart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -14,12 +16,39 @@ interface LoginModalProps {
 const LoginModal = ({ isOpen, onClose, onSwitchToSignup }: LoginModalProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login:", { email, password });
-    onClose();
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        toast({
+          title: "Success!",
+          description: "Welcome back! You've been logged in successfully.",
+        });
+        onClose();
+        window.location.href = '/profile';
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      toast({
+        title: "Login Failed",
+        description: error.message || "Please check your email and password.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,8 +86,8 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }: LoginModalProps) => {
             />
           </div>
           
-          <Button type="submit" className="w-full" variant="romantic">
-            Sign In
+          <Button type="submit" className="w-full" variant="romantic" disabled={loading}>
+            {loading ? "Signing In..." : "Sign In"}
           </Button>
           
           <div className="text-center text-sm text-muted-foreground">

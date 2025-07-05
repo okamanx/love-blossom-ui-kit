@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Heart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface SignupModalProps {
   isOpen: boolean;
@@ -12,30 +14,79 @@ interface SignupModalProps {
 }
 
 const SignupModal = ({ isOpen, onClose, onSwitchToLogin }: SignupModalProps) => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  });
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
+    
+    if (password !== confirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "Passwords don't match. Please try again.",
+        variant: "destructive",
+      });
       return;
     }
-    // Handle signup logic here
-    console.log("Signup:", formData);
-    onClose();
-  };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    if (password.length < 6) {
+      toast({
+        title: "Password Too Short",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            full_name: `${firstName} ${lastName}`.trim(),
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        toast({
+          title: "Account Created!",
+          description: "Please check your email to verify your account before signing in.",
+        });
+        onClose();
+        
+        // Reset form
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      }
+    } catch (error: any) {
+      console.error('Signup error:', error);
+      toast({
+        title: "Signup Failed",
+        description: error.message || "Failed to create account. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,10 +105,9 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }: SignupModalProps) => 
               <Label htmlFor="firstName">First Name</Label>
               <Input
                 id="firstName"
-                name="firstName"
                 placeholder="First name"
-                value={formData.firstName}
-                onChange={handleChange}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 required
               />
             </div>
@@ -65,10 +115,9 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }: SignupModalProps) => 
               <Label htmlFor="lastName">Last Name</Label>
               <Input
                 id="lastName"
-                name="lastName"
                 placeholder="Last name"
-                value={formData.lastName}
-                onChange={handleChange}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 required
               />
             </div>
@@ -78,11 +127,10 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }: SignupModalProps) => 
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
-              name="email"
               type="email"
               placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -91,11 +139,10 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }: SignupModalProps) => 
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
-              name="password"
               type="password"
               placeholder="Create a password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -104,17 +151,16 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }: SignupModalProps) => 
             <Label htmlFor="confirmPassword">Confirm Password</Label>
             <Input
               id="confirmPassword"
-              name="confirmPassword"
               type="password"
               placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
           </div>
           
-          <Button type="submit" className="w-full" variant="romantic">
-            Create Account
+          <Button type="submit" className="w-full" variant="romantic" disabled={loading}>
+            {loading ? "Creating Account..." : "Create Account"}
           </Button>
           
           <div className="text-center text-sm text-muted-foreground">
