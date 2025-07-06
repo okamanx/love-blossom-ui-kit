@@ -22,6 +22,7 @@ interface Profile {
   address: string | null;
   physical_condition: string | null;
   disabilities_disorders: string[] | null;
+  avatar_url: string | null;
 }
 
 interface EditProfileModalProps {

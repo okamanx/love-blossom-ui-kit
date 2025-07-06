@@ -37,7 +37,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }: LoginModalProps) => {
           description: "Welcome back! You've been logged in successfully.",
         });
         onClose();
-        window.location.href = '/profile';
+        window.location.href = '/home';
       }
     } catch (error: any) {
       console.error('Login error:', error);
