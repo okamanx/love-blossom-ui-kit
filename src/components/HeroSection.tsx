@@ -1,12 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import heroImage from "@/assets/hero-couple.jpg";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface HeroSectionProps {
   onOpenSignup: () => void;
 }
 
 const HeroSection = ({ onOpenSignup }: HeroSectionProps) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleStartJourney = () => {
+    if (user) {
+      navigate('/home');
+    } else {
+      onOpenSignup();
+    }
+  };
+
+  const handleBrowseProfiles = () => {
+    if (user) {
+      navigate('/home');
+    } else {
+      onOpenSignup();
+    }
+  };
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background Image with Overlay */}
@@ -43,11 +63,11 @@ const HeroSection = ({ onOpenSignup }: HeroSectionProps) => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up [animation-delay:0.5s]">
-            <Button variant="hero" size="xl" className="min-w-[200px]" onClick={onOpenSignup}>
+            <Button variant="hero" size="xl" className="min-w-[200px]" onClick={handleStartJourney}>
               <Heart className="mr-2 animate-heart-beat" />
               Start Your Journey
             </Button>
-            <Button variant="elegant" size="xl" className="min-w-[200px]">
+            <Button variant="elegant" size="xl" className="min-w-[200px]" onClick={handleBrowseProfiles}>
               Browse Profiles
             </Button>
           </div>
