@@ -15,6 +15,7 @@ interface Profile {
   id: string;
   user_id: string;
   name: string | null;
+  username: string | null;
   email: string | null;
   phone_number: string | null;
   gender: string | null;
@@ -40,6 +41,7 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate, currentProfile }: 
   
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     email: '',
     phone_number: '',
     gender: '',
@@ -53,6 +55,7 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate, currentProfile }: 
     if (currentProfile) {
       setFormData({
         name: currentProfile.name || '',
+        username: currentProfile.username || '',
         email: currentProfile.email || '',
         phone_number: currentProfile.phone_number || '',
         gender: currentProfile.gender || '',
@@ -75,6 +78,7 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate, currentProfile }: 
       const profileData = {
         user_id: user.id,
         name: formData.name || null,
+        username: formData.username || null,
         email: formData.email || null,
         phone_number: formData.phone_number || null,
         gender: formData.gender || null,
@@ -163,6 +167,16 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate, currentProfile }: 
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 placeholder="Enter your full name"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                value={formData.username}
+                onChange={(e) => handleInputChange('username', e.target.value)}
+                placeholder="Enter a unique username"
               />
             </div>
             
