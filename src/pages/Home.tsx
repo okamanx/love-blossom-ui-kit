@@ -84,9 +84,9 @@ const Home = () => {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-bold text-center">
             <Heart className="w-6 h-6 inline mr-2 animate-heart-beat" />
-            All User Profiles
+            Community Directory
           </h1>
-          <p className="text-center text-white/90 mt-2">Browse all community members</p>
+          <p className="text-center text-white/90 mt-2">Browse all members with their unique IDs and usernames</p>
         </div>
       </div>
 
@@ -95,8 +95,8 @@ const Home = () => {
         {profiles.length === 0 ? (
           <div className="text-center py-12">
             <Heart className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
-            <h3 className="text-xl font-medium mb-2 text-muted-foreground">No profiles yet</h3>
-            <p className="text-muted-foreground">Be the first to complete your profile!</p>
+            <h3 className="text-xl font-medium mb-2 text-muted-foreground">No profiles found</h3>
+            <p className="text-muted-foreground">Complete your profile to appear in the community directory!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -116,9 +116,17 @@ const Home = () => {
                       {profile.name || 'Anonymous'}
                     </h3>
                     
-                    {profile.username && (
-                      <p className="text-sm text-muted-foreground mb-2 text-center">@{profile.username}</p>
-                    )}
+                    {/* Username prominently displayed */}
+                    <div className="text-center mb-2">
+                      <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 font-mono">
+                        @{profile.username || `user_${profile.user_id.substring(0, 8)}`}
+                      </Badge>
+                    </div>
+                    
+                    {/* User ID for reference */}
+                    <div className="text-xs text-muted-foreground mb-2 font-mono">
+                      ID: {profile.user_id.substring(0, 8)}...
+                    </div>
                     
                     {profile.physical_condition && (
                       <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 mb-2">
