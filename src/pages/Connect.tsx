@@ -97,6 +97,10 @@ const Connect = () => {
     setFilteredProfiles(filtered);
   };
 
+  useEffect(() => {
+    handleFilter();
+  }, [cityFilter, countryFilter, profiles]);
+
   const clearFilters = () => {
     setCityFilter('');
     setCountryFilter('');

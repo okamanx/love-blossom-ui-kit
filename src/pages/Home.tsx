@@ -10,7 +10,9 @@ import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
   id: string;
+  user_id: string;
   name: string | null;
+  username: string | null;
   email: string | null;
   phone_number: string | null;
   gender: string | null;
@@ -82,8 +84,9 @@ const Home = () => {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-bold text-center">
             <Heart className="w-6 h-6 inline mr-2 animate-heart-beat" />
-            Discover Connections
+            All User Profiles
           </h1>
+          <p className="text-center text-white/90 mt-2">Browse all community members</p>
         </div>
       </div>
 
@@ -112,6 +115,10 @@ const Home = () => {
                     <h3 className="text-lg font-semibold text-center mb-1">
                       {profile.name || 'Anonymous'}
                     </h3>
+                    
+                    {profile.username && (
+                      <p className="text-sm text-muted-foreground mb-2 text-center">@{profile.username}</p>
+                    )}
                     
                     {profile.physical_condition && (
                       <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 mb-2">
