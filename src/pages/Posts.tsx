@@ -329,15 +329,15 @@ const Posts = () => {
                   {/* Post Header */}
                   <div className="flex items-center gap-3 mb-4">
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={post.profiles.avatar_url || ''} />
+                      <AvatarImage src={post.profiles?.avatar_url || ''} />
                       <AvatarFallback className="bg-gradient-romantic text-white text-sm">
-                        {getInitials(post.profiles.name)}
+                        {getInitials(post.profiles?.name)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h4 className="font-semibold">{post.profiles.name || 'Anonymous'}</h4>
+                      <h4 className="font-semibold">{post.profiles?.name || 'Anonymous'}</h4>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        {post.profiles.username && <span>@{post.profiles.username}</span>}
+                        {post.profiles?.username && <span>@{post.profiles.username}</span>}
                         <span>•</span>
                         <span>{formatDate(post.created_at)}</span>
                       </div>
